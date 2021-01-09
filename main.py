@@ -3,7 +3,7 @@ import colorama
 from colorama import Fore, Style
 import sys
 # Globals
-playing = False
+playing = True
 
 class gameBoard:
     def __init__(self):
@@ -161,8 +161,27 @@ class gameBoard:
                 AllMoves.append(i)
         return AllMoves
 
-def makeAllmoves(board):
+def makeAllmoves(board, prevMoveList):
+    if board.GameWon():
+        print(prevMoveList)
+        makeFullGame(prevMoveList)
+        #board.print()
+        sys.exit()
+    else:
+        allMoves = board.GetAllMoves()
+        for i in allMoves:
+            dubBoard = gameBoard()
+            dubBoard.copy(board)
+            dubBoard.makeMove(i, False)
+            newList = prevMoveList + [i]
+            makeAllmoves(dubBoard, newList)
     pass
+
+def makeFullGame(moves):
+    gameToPlay = gameBoard()
+    for i in moves:
+        gameToPlay.makeMove(i, False)
+        gameToPlay.print()
 
 newGame = gameBoard()
 if playing:
@@ -179,7 +198,6 @@ if playing:
             print(Fore.RED + "GAME OVER, FINAL BOARD: " + Style.RESET_ALL)
             newGame.print()
 else:
-    movesMade = []
-    
+    makeAllmoves(newGame, [])
 
 
